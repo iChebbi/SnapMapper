@@ -36,6 +36,14 @@ class Prefs(context: Context) {
         get() = sp.getInt("double_ms", 350)
         set(v) = sp.edit().putInt("double_ms", v).apply()
 
+    /**
+     * How long the Circle to Search fallback holds the navigation handle. On the Find X9 (ColorOS 17)
+     * 900 ms opens it and 800 ms doesn't; too short and the touch lands on the app underneath.
+     */
+    var circleHoldMs: Int
+        get() = sp.getInt("circle_hold_ms", 1000)
+        set(v) = sp.edit().putInt("circle_hold_ms", v).apply()
+
     var vibrate: Boolean
         get() = sp.getBoolean("vibrate", true)
         set(v) = sp.edit().putBoolean("vibrate", v).apply()

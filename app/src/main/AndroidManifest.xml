@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- LongPressService has to go foreground for an instant; see its comment. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <!-- Lets the "Launch app" action list installed apps. -->
     <queries>
@@ -28,13 +30,32 @@
             </intent-filter>
         </activity>
 
+        <!-- See-through; in front only for the instant it takes to ask for Circle to Search. -->
+        <activity
+            android:name=".CircleToSearchActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <!-- ColorOS binds this (Snap Key set to "Translate") and sends SINGLE_TAP / LONG_PRESS.
              Messages are only accepted from com.oplus.gesture; see KeyMessengerService. -->
         <service
             android:name="com.coloros.translate.ui.cube.KeyMessengerService"
             android:exported="true" />
 
-        <!-- ColorOS starts this action on a long press of the Snap Key. -->
+        <!-- Some gesture app versions start this service on a long press of the Snap Key... -->
+        <service
+            android:name="com.coloros.translate.ui.cube.LongPressService"
+            android:exported="true"
+            android:foregroundServiceType="shortService">
+            <intent-filter>
+                <action android:name="oplus.intent.action.GLOBAL_TRANSLATION" />
+            </intent-filter>
+        </service>
+
+        <!-- ...and others start this activity. -->
         <activity
             android:name="com.coloros.translate.ui.cube.LongPressActivity"
             android:exported="true"

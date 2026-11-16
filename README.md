@@ -76,7 +76,7 @@ Details for each step are [below](#install-step-by-step).
 |---|---|
 | **Quick toggles** | Flashlight · Switch ring / vibrate · Cycle ring / vibrate / silent |
 | **Capture** | Take screenshot · Open camera · Record video |
-| **Open** | Any app · A link · Voice assistant · Web search · Start a timer |
+| **Open** | Any app · A link · Voice assistant · Web search · Circle to Search · Start a timer |
 | **Media** | Play / pause · Next track · Previous track |
 | **System** | Notifications · Quick settings · Recent apps · Home · Back · Lock screen · Power menu · Split screen |
 
@@ -199,6 +199,12 @@ closes instantly, but if the keyboard is open, it **briefly hides and reappears 
 | Lock screen, power menu, recent apps | Anything you use while typing |
 | Start a timer, web search | |
 
+**Circle to Search:** SnapMapper asks Android to open it, which takes about a third of a second.
+The phone has to be unlocked. On phones that refuse that call, SnapMapper falls back to what a
+finger does and holds the navigation handle for a moment: that takes over a second, needs the
+handle (or the home button) shown, and its hold time is under
+**Advanced settings → Circle to Search hold**. Tested on the OPPO Find X9 (CPH2797, ColorOS 17).
+
 **Screen off:** ColorOS turns the screen on for every long press. For actions that don't need
 the screen (ring/vibrate, flashlight, media), SnapMapper turns it straight back off, so you'll
 see at most a brief flash.
@@ -223,7 +229,8 @@ SnapMapper asks for **no runtime permissions**. There's nothing to allow in a po
 
 **What the accessibility service is used for:** only for things a normal app isn't allowed to
 do from the background: taking a screenshot, locking the screen, opening notifications, quick
-settings, recent apps or the power menu, opening apps while you're in another app, and showing
+settings, recent apps or the power menu, opening apps while you're in another app, holding the
+navigation handle as the Circle to Search fallback (the "perform gestures" capability), and showing
 the optional pill around the camera.
 
 It's configured to **not read screen content** (`canRetrieveWindowContent="false"`), and it
@@ -331,6 +338,8 @@ key listeners never receive it. ColorOS handles it inside the system instead:
      `key = "SINGLE_TAP"`;
    - **long press**: it starts the activity action `coloros.intent.action.translate.CUBE` in
      that package, with `action_key_type = 2`.
+     Other versions of the gesture app (8.6.0 on the Find X9) start a foreground service with
+     action `oplus.intent.action.GLOBAL_TRANSLATION` instead; SnapMapper provides both.
 
 SnapMapper uses the package name `com.coloros.translate` and provides exactly that service and
 activity, so ColorOS delivers every Snap Key press to it. SnapMapper only accepts messages sent

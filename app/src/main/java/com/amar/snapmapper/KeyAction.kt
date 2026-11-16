@@ -1,10 +1,12 @@
 package com.amar.snapmapper
 
 import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.GestureDescription
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Path
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.AudioManager
@@ -18,6 +20,8 @@ import android.os.VibratorManager
 import android.provider.AlarmClock
 import android.provider.MediaStore
 import android.view.KeyEvent
+import android.view.WindowInsets
+import android.view.WindowManager
 import android.widget.Toast
 
 enum class KeyAction(val label: String) {
@@ -44,6 +48,7 @@ enum class KeyAction(val label: String) {
     SPLIT_SCREEN("Split screen"),
     TIMER("Start a timer"),
     WEB_SEARCH("Web search"),
+    CIRCLE_TO_SEARCH("Circle to Search"),
 }
 
 /** Runs actions from inside the accessibility service. */
@@ -101,6 +106,7 @@ class ActionRunner(private val service: AccessibilityService) {
                 KeyAction.SPLIT_SCREEN -> global(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN)
                 KeyAction.TIMER -> start(Intent(AlarmClock.ACTION_SET_TIMER).putExtra(AlarmClock.EXTRA_SKIP_UI, false))
                 KeyAction.WEB_SEARCH -> start(Intent(Intent.ACTION_WEB_SEARCH).putExtra(SearchManager.QUERY, ""))
+                KeyAction.CIRCLE_TO_SEARCH -> start(Intent(service, CircleToSearchActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION))
             }
         } catch (e: Exception) {
             toast("${action.label} failed: ${e.message}")
@@ -125,6 +131,21 @@ class ActionRunner(private val service: AccessibilityService) {
             service.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             toast("No app can handle that")
+        }
+    }
+
+    /**
+     * Opens Circle to Search the way a finger does: a long press on the navigation handle.
+     * Slower fallback for [CircleToSearchActivity]. Needs the handle (or the home button) to be shown.
+     */
+    fun holdNavHandle(holdMs: Int) {
+        val metrics = service.getSystemService(WindowManager::class.java).currentWindowMetrics
+        val bar = metrics.windowInsets.getInsets(WindowInsets.Type.navigationBars()).bottom
+        if (bar == 0) return toast("Circle to Search needs the navigation bar to be shown")
+        val middleOfBar = Path().apply { moveTo(metrics.bounds.width() / 2f, metrics.bounds.height() - bar / 2f) }
+        val press = GestureDescription.StrokeDescription(middleOfBar, 0, holdMs.toLong())
+        if (!service.dispatchGesture(GestureDescription.Builder().addStroke(press).build(), null, null)) {
+            toast("This phone refused that action")
         }
     }
 

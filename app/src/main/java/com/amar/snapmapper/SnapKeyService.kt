@@ -100,6 +100,8 @@ class SnapKeyService : AccessibilityService() {
         }
     }
 
+    internal fun holdNavHandle() = runner.holdNavHandle(prefs.circleHoldMs)
+
     internal fun onSnapLong() {
         handler.removeCallbacks(tapRunnable)
         tapPending = false
@@ -183,8 +185,8 @@ class SnapKeyService : AccessibilityService() {
         if (prefs.vibrate && !ownHaptics) tick()
 
         val result = runner.run(action, g, prefs, scope)
-        // The flashlight is its own confirmation, so it gets no pill.
-        if (prefs.showPopup && screenOn && action != KeyAction.FLASHLIGHT) popup(result)
+        // The flashlight is its own confirmation, and so is Circle to Search (which would also capture the pill).
+        if (prefs.showPopup && screenOn && action != KeyAction.FLASHLIGHT && action != KeyAction.CIRCLE_TO_SEARCH) popup(result)
         history(g, result, where)
         listener?.onGesture(g, action)
     }

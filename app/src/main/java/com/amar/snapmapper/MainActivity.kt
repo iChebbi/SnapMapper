@@ -145,7 +145,21 @@ class MainActivity : Activity(), SnapKeyService.Listener {
         )
         if (prefs.advanced) {
             adv += row("Double-press window", "${prefs.doublePressMs} ms · how long to wait for a second press") {
-                askDoubleMs()
+                askMs(
+                    "Double-press window",
+                    "How long SnapMapper waits for a second press, in milliseconds (100–1000). " +
+                        "Shorter makes single presses faster; longer makes double presses easier.",
+                    100..1000, prefs.doublePressMs,
+                ) { prefs.doublePressMs = it }
+            }
+            adv += row("Circle to Search hold", "${prefs.circleHoldMs} ms · only used if the phone refuses the direct call") {
+                askMs(
+                    "Circle to Search hold",
+                    "On phones that refuse the direct call, Circle to Search is opened by holding the navigation " +
+                        "handle for this long, in milliseconds (300–3000). Raise it if the press taps the app " +
+                        "underneath instead of opening Circle to Search.",
+                    300..3000, prefs.circleHoldMs,
+                ) { prefs.circleHoldMs = it }
             }
             if (prefs.showPopup) {
                 val off = prefs.islandOffsetDp
@@ -384,19 +398,18 @@ class MainActivity : Activity(), SnapKeyService.Listener {
             .show()
     }
 
-    private fun askDoubleMs() {
+    private fun askMs(title: String, message: String, range: IntRange, current: Int, save: (Int) -> Unit) {
         val input = EditText(this).apply {
             inputType = InputType.TYPE_CLASS_NUMBER
-            setText(prefs.doublePressMs.toString())
+            setText(current.toString())
             setSelectAllOnFocus(true)
         }
         AlertDialog.Builder(this)
-            .setTitle("Double-press window")
-            .setMessage("How long SnapMapper waits for a second press, in milliseconds (100–1000). " +
-                "Shorter makes single presses faster; longer makes double presses easier.")
+            .setTitle(title)
+            .setMessage(message)
             .setView(padded(input))
             .setPositiveButton("Save") { _, _ ->
-                input.text.toString().toIntOrNull()?.let { prefs.doublePressMs = it.coerceIn(100, 1000) }
+                input.text.toString().toIntOrNull()?.let { save(it.coerceIn(range)) }
                 changed()
             }
             .setNegativeButton("Cancel", null)

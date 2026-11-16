@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Used only to run actions (screenshot, lock screen, opening apps from the background).
-     It doesn't filter keys or read screen content; Snap Key presses come from ColorOS. -->
+     It doesn't filter keys or read screen content; Snap Key presses come from ColorOS.
+     canPerformGestures: the Circle to Search fallback long-presses the navigation handle. -->
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:accessibilityEventTypes="typeWindowStateChanged"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:canRetrieveWindowContent="false"
+    android:canPerformGestures="true"
     android:notificationTimeout="1000"
     android:description="@string/service_description" />
