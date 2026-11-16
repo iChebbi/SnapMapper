@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><b>⬇ Download SnapMapper.apk (96 KB)</b></a>
+  <a href="https://github.com/iChebbi/SnapMapper/releases/latest"><b>⬇ Download SnapMapper.apk (96 KB)</b></a>
 </p>
 
 <p align="center">
@@ -54,7 +54,7 @@
 ## Quick start
 
 1. **Uninstall ColorOS Translate** if your phone has it.
-2. **Download** [`SnapMapper.apk`](../../releases/latest) on the phone.
+2. **Download** [`SnapMapper.apk`](https://github.com/iChebbi/SnapMapper/releases/latest) on the phone.
 3. Open it from **My Files → Downloads** and choose **App Market (official)**, not "Package
    installer". If it shows a security scan, tap **Install anyway**.
 4. Open SnapMapper and turn it on: **Accessibility → Downloaded apps → SnapMapper → On**.
@@ -120,7 +120,7 @@ same time.
 
 ### 2. Download the app
 
-On the phone, open the [latest release](../../releases/latest) and download
+On the phone, open the [latest release](https://github.com/iChebbi/SnapMapper/releases/latest) and download
 **`SnapMapper.apk`**.
 
 ### 3. Install it with App Market
@@ -384,7 +384,7 @@ Nothing else on your phone was changed.
 Requirements: JDK 17 and the Android SDK (platform 35).
 
 ```bash
-git clone https://github.com/amarsakore/SnapMapper.git
+git clone https://github.com/iChebbi/SnapMapper.git
 cd SnapMapper
 ./gradlew assembleRelease
 ```
@@ -406,6 +406,9 @@ Issues and pull requests are welcome.
 ---
 
 ## Credits and license
+
+Fork of [SnapMapper](https://github.com/amarsakore/SnapMapper) by amarsakore, with Circle to Search and
+long-press support for the Find X9 added.
 
 Inspired by [KeySnap](https://github.com/Nicholas-Arda/KeySnap). No code from KeySnap is used.
 
